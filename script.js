@@ -1,98 +1,68 @@
-let input = document.querySelector("#input");
-let percent = document.querySelector("#percent");
-let remove = document.querySelector("#remove");
-let del = document.querySelector("#del");
-let division = document.querySelector("#division");
-let seven = document.querySelector("#seven");
-let eight = document.querySelector("#eight");
-let nine = document.querySelector("#nine");
-let multiply = document.querySelector("#multiply");
-let four = document.querySelector("#four");
-let five = document.querySelector("#five");
-let six = document.querySelector("#six");
-let subtract = document.querySelector("#subtract");
-let one = document.querySelector("#one");
-let two = document.querySelector("#two");
-let three = document.querySelector("#three");
-let addition = document.querySelector("#addition");
-let plusMinus = document.querySelector("#plusMinus");
-let zero = document.querySelector("#zero");
-let point = document.querySelector("#point");
-let equal = document.querySelector("#equal");
+let screen = document.querySelector("#result");
+let buttons = document.getElementsByClassName("btn");
 
-percent.onclick = function () { clickEventHandler(percent) };
-remove.onclick = function () { clickEventRemove(remove) };
-del.onclick = function () { clickEventDel(del) };
-division.onclick = function () { clickEventHandler(division) };
-seven.onclick = function () { clickEventHandler(seven) };
-eight.onclick = function () { clickEventHandler(eight) };
-nine.onclick = function () { clickEventHandler(nine) };
-multiply.onclick = function () { clickEventHandler(multiply) };
-four.onclick = function () { clickEventHandler(four) };
-five.onclick = function () { clickEventHandler(five) };
-six.onclick = function () { clickEventHandler(six) };
-subtract.onclick = function () { clickEventHandler(subtract) };
-one.onclick = function () { clickEventHandler(one) };
-two.onclick = function () { clickEventHandler(two) };
-three.onclick = function () { clickEventHandler(three) };
-addition.onclick = function () { clickEventHandler(addition) };
-plusMinus.onclick = function () { clickEventHandler(plusMinus) };
-zero.onclick = function () { clickEventHandler(zero) };
-point.onclick = function () { clickEventHandler(point) };
-equal.onclick = function () { calculation(arrCalc) };
-
-let arrCalc = [];
-input.value = arrCalc.join();
-
-
-// Asahidaki kod ile niye islemir???
-// equal.addEventListener("click", clickEventHandler());
-
-
-function clickEventHandler(event) {
-    arrCalc.push(event.innerText);
-    input.value = arrCalc.join(" ");
-    console.log(arrCalc);
+for (let i = 0; i < buttons.length; i++) {
+  if (
+    buttons[i].innerHTML !== "C" &&
+    buttons[i].innerHTML !== "=" &&
+    buttons[i].innerHTML !== "CE" &&
+    buttons[i].innerHTML !== "+/-"
+  ) {
+    buttons[i].addEventListener("click", function () {
+      screen.innerText += this.innerText;
+    });
+  }
+  else if (buttons[i].innerHTML === "CE") {
+    buttons[i].addEventListener("click", function (event) {
+      let x = screen.innerText;
+      screen.innerText = x.substr(0, x.length - 1);
+    })
+  }
 }
 
-function clickEventRemove() {
-    arrCalc.pop();
-    input.value = arrCalc.join(" ");
-    // Bu funksiya reqemleri sola dogru bir-bir silmelidir ve yerde qalmis value-nu sabit bit deyisene assign etmelidir ki yerde qalan reqem ile hesablama apara bilek.
+clear.addEventListener("click", function () {
+  screen.innerText = "";
+});
+
+function indexOfAll(str, keys = []) {
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    let index = str.indexOf(key);
+    if (index >= 0) return index;
+  }
+  return -1;
 }
 
-function clickEventDel() {
-    arrCalc = [];
-    input.value = arrCalc.join(" ");
-}
+equal.addEventListener("click", function () {
+  let a = screen.innerText;
+  let operator = indexOfAll(a, ["+", "-", "x", "÷", "%"]);
+  let operand1 = Number(a.slice(0, operator));
+  let operand2 = Number(a.slice(operator + 1));
+  let result = 0;
+  switch (a[operator]) {
+    case "+":
+      result = operand1 + operand2;
+      break;
 
+    case "-":
+      result = operand1 - operand2;
+      break;
 
+    case "x":
+      result = operand1 * operand2;
+      break;
 
-function calculation(arr) {
-    temp1 = Number(arr[0])
-    temp2 = Number(arr[2])
-    result = 0;
-    switch (arr[1]) {
-        case "+":
-            result = (temp1 + temp2);
-            break;
+    case "÷":
+      result = operand1 / operand2;
+      break;
 
-        case "-":
-            result = (temp1 - temp2);
-            break;
+    case "%":
+      result = operand1 % operand2;
+      break;
 
-        case "X":
-            result = (temp1 * temp2);
-            break;
-
-        case "/":
-            result = (temp1 / temp2);
-            break;
-
-        default:
-            break;
-    }
-    input.value = result;
-    arr.length = 0;
-    arr.push(result);
-}
+    default:
+      result = "NaN";
+      break;
+  }
+  screen.innerText = result;
+});
